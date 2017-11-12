@@ -1,21 +1,52 @@
 package com.cmfs.mapper;
 
-import com.sun.istack.internal.NotNull;
-
 /**
  * @author cmfs
  */
 
 public class Mappers {
 
-    private static MapperFactory mapperFactory = new DefaultMapperFactory();
+    private static MapperFactory sMapperFactory = new DefaultMapperFactory();
 
-    public static MapperFactory getMapperFactory() {
-        return mapperFactory;
+    private static Finder sFinder;
+
+    static {
+        try {
+            //noinspection unchecked
+            Class<? extends Finder> finderClass =
+                    (Class<? extends Finder>) Class.forName("com.cmfs.mapper.MapperFinder");
+            sFinder = finderClass.newInstance();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static void setMapperFactory(@NotNull MapperFactory mapperFactory) {
-        Mappers.mapperFactory = mapperFactory;
+    public static MapperFactory getMapperFactory() {
+        return sMapperFactory;
+    }
+
+    public static void setMapperFactory(MapperFactory mapperFactory) {
+        Mappers.sMapperFactory = mapperFactory;
+    }
+
+    public static Finder getFinder() {
+        return sFinder;
+    }
+
+    public static void setFinder(Finder sFinder) {
+        Mappers.sFinder = sFinder;
+    }
+
+    public static <SRC> Source<SRC> source(SRC src) {
+        return new Source<>(src);
+    }
+
+    public static <SRC, DEST> DEST map(SRC src, Class<DEST> destClass) {
+        return new Source<>(src).to(destClass);
     }
 
     private static final class DefaultMapperFactory implements MapperFactory {
@@ -26,6 +57,22 @@ public class Mappers {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    public static class Source<SRC> {
+
+        private SRC src;
+
+        Source(SRC src) {
+            this.src = src;
+        }
+
+        public <DEST> DEST to(Class<DEST> destClass) {
+            //noinspection unchecked
+            Class<SRC> srcClass = (Class<SRC>) src.getClass();
+            Mapper<SRC, DEST> mapper = sFinder.find(srcClass, destClass);
+            return mapper.map(src);
         }
     }
 

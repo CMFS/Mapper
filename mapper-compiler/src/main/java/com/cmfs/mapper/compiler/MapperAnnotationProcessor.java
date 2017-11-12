@@ -183,11 +183,11 @@ public class MapperAnnotationProcessor extends BaseAnnotationProcessor {
                 attrsSetCodeBlockBuilder
                         .beginControlFlow("if ($L != null)", paramName);
                 for (FieldReflection fieldReflection : fieldReflectionList) {
-                    VariableElement src = fieldReflection.getVariableElement();
-                    VariableElement dest = fieldReflection.getTargetVariableElement();
-                    if (src.asType() != dest.asType()) {
-                        attrsSetCodeBlockBuilder.add("// ");
-                    }
+//                    VariableElement src = fieldReflection.getVariableElement();
+//                    VariableElement dest = fieldReflection.getTargetVariableElement();
+//                    if (src.asType() != dest.asType()) {  // 类型不一致
+//                        attrsSetCodeBlockBuilder.add("// ");
+//                    }
                     attrsSetCodeBlockBuilder.add(fieldReflection.getSetMethodCode(returnName, paramName));
                 }
                 attrsSetCodeBlockBuilder.endControlFlow();

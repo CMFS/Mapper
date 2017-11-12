@@ -6,14 +6,17 @@ package com.cmfs.mapper;
 
 final class Utils {
 
+    private static final String PACKAGE_MAPPERS = "com.cmfs.mapper.mappers";
+    private static final String DOT = ".";
     private static final String DELIMITER = "$$";
     private static final String REFLECTOR_SUFFIX = "Mapper";
 
     static String getMapperName(Class<?> source, Class<?> target) {
-        return concat(source.getSimpleName(), DELIMITER, target.getSimpleName(), DELIMITER, REFLECTOR_SUFFIX);
+        return concat(PACKAGE_MAPPERS, DOT, source.getSimpleName(), DELIMITER, target.getSimpleName(), DELIMITER, REFLECTOR_SUFFIX);
     }
+
     static String getMapperName(String source, String target) {
-        return concat(source, DELIMITER, target, DELIMITER, REFLECTOR_SUFFIX);
+        return concat(PACKAGE_MAPPERS, DOT, source, DELIMITER, target, DELIMITER, REFLECTOR_SUFFIX);
     }
 
     static String concat(String... strings) {
