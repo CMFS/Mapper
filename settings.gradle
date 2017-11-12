@@ -1,0 +1,1 @@
+include ':sample', ':mapper-annotations', ':mapper-compiler', ':mapper-api'
